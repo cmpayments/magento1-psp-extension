@@ -1,0 +1,20 @@
+<?php
+	$code = $this->getMethodCode();
+	$bank_select = $this->__('Select your bank');
+?>
+<ul class="cmpayments-form-list" id="payment_form_<?php echo $code ?>" style="display:none;">
+	<li>
+		<label for="<?php echo $code ?>_issuer" class="required"><?php echo $bank_select ?><em>*</em></label>
+		<div class="input-box">
+			<select id="<?php echo $code ?>_issuer"
+					name="payment[issuer]"
+					title="<?php echo $bank_select ?>"
+					class="required-entry">
+				<option value=""><?php echo $this->__('--Please Select--') ?></option>
+			<?php foreach ($this->getIssuers() as $label => $key): ?>
+				<option value="<?php echo $key ?>"><?php echo $label ?></option>
+			<?php endforeach ?>
+			</select>
+		</div>
+	</li>
+</ul>	

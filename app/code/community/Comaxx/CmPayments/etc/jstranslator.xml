@@ -1,0 +1,5 @@
+<jstranslator>
+	<afterpay_validation_phone translate="message" module="cmpayments">
+		<message>Please enter a number of 10 digits. For example: 010-1010101 or (010) 10 10 101</message>
+	</afterpay_validation_phone>
+</jstranslator>

@@ -1,0 +1,38 @@
+/**
+ * CM Payments Additional styles for Checkout.
+ *
+ * Used for positioning / aligning fields properly which have been added for specific payment methods
+ */
+
+#fields-container-afterpay .form-list {
+	overflow: hidden; /* To make sure the form is cleared properly of floats */
+}
+
+/* hide field by positioning it outside screen (cannot use display:none since it will prevent posting these fields */
+#fields-container-afterpay.visuallyhidden {
+	position: absolute;
+	left:-50000px;
+}
+
+#fields-container-afterpay .billing-shipping-same {
+	display:none;
+}
+
+#fields-container-afterpay .input-box.small input {
+	width: 50px;
+}
+
+#fields-container-afterpay label.billing_housenumber em,
+#fields-container-afterpay label.shipping_housenumber em {
+	float: none;
+	position: relative;
+	right: 0;
+}
+
+#fields-container-afterpay input.afterpay_housenumber {
+	margin: 0 45px 0 0;
+}
+
+#fields-container-afterpay .input-box input {
+	width: 155px;
+}

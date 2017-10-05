@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<Comaxx_CmPayments>
+			<version>0.0.2</version>
+		</Comaxx_CmPayments>
+	</modules>
+
+	<global>
+		<helpers>
+			<cmpayments>
+				<class>Comaxx_CmPayments_Helper</class>
+			</cmpayments>
+		</helpers>
+
+		<models>
+			<cmpayments>
+				<class>Comaxx_CmPayments_Model</class>
+			</cmpayments>
+			<sales>
+				<rewrite>
+					<!-- This override seems to only be used for backend, Magento's frontend PDF does not actually seem to use the PDF classes -->
+					<order_pdf_invoice>Comaxx_CmPayments_Model_Sales_Order_Pdf_Invoice</order_pdf_invoice>
+				</rewrite>
+			</sales>
+		</models>
+
+		<events>
+			<!-- Handle Magento Refund, Cancel/Paid via Magento not supported by CmPayments at the moment -->
+			<sales_order_creditmemo_refund>
+				<observers>
+					<comaxx_cmpayments_sales_observer>
+						<type>singleton</type>
+						<class>Comaxx_CmPayments_Model_Sales_Observer</class>
+						<method>refundPayment</method>
+					</comaxx_cmpayments_sales_observer>
+				</observers>
+			</sales_order_creditmemo_refund>
+			<!-- todo provide info -->
+			<payment_info_block_prepare_specific_information>
+				<observers>
+					<comaxx_cmpayments_specific_information_observer>
+						<type>singleton</type>
+						<class>Comaxx_CmPayments_Model_Sales_Observer</class>
+						<method>specificInformation</method>
+					</comaxx_cmpayments_specific_information_observer>
+				</observers>
+			</payment_info_block_prepare_specific_information>
+			<!-- on config save of cmpayments in backend, perform validation to check if plugin can run properly  -->
+			<model_config_data_save_before>
+				<observers>
+					<comaxx_cmpayments_save_observer>
+						<type>singleton</type>
+						<class>Comaxx_CmPayments_Model_Observer</class>
+						<method>configSave</method>
+					</comaxx_cmpayments_save_observer>
+				</observers>
+			</model_config_data_save_before>
+		</events>
+
+		<blocks>
+			<cmpayments>
+				<class>Comaxx_CmPayments_Block</class>
+			</cmpayments>
+			<adminhtml>
+				<rewrite>
+					<!-- rewrites in backend for display of order/invoice/creditmemo -->
+					<sales_order_totals>Comaxx_CmPayments_Block_Adminhtml_Sales_Totals_Order</sales_order_totals>
+					<sales_order_invoice_totals>Comaxx_CmPayments_Block_Adminhtml_Sales_Totals_Invoice</sales_order_invoice_totals>
+					<sales_order_creditmemo_totals>Comaxx_CmPayments_Block_Adminhtml_Sales_Totals_Creditmemo</sales_order_creditmemo_totals>
+				</rewrite>
+			</adminhtml>
+			<sales>
+				<rewrite>
+					<!-- rewrite for frontend order, invoice and creditmemo overview in account section -->
+					<order_totals>Comaxx_CmPayments_Block_Sales_Totals_Fee</order_totals>
+					<order_invoice_totals>Comaxx_CmPayments_Block_Sales_Totals_Fee</order_invoice_totals>
+					<order_creditmemo_totals>Comaxx_CmPayments_Block_Sales_Totals_Fee</order_creditmemo_totals>
+				</rewrite>
+			</sales>
+		</blocks>
+
+		<resources>
+			<comaxx_cmpayments_setup>
+				<setup>
+					<module>Comaxx_CmPayments</module>
+					<class>Comaxx_CmPayments_Model_Resource_Setup</class>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</comaxx_cmpayments_setup>
+			<cmpayments_write>
+				<connection>
+					<use>core_write</use>
+				</connection>
+			</cmpayments_write>
+			<cmpayments_read>
+				<connection>
+					<use>core_read</use>
+				</connection>
+			</cmpayments_read>
+		</resources>
+
+		<!-- define payment group which all methods refer to -->
+		<payment>
+			<groups>
+				<cmpayments>CmPayments</cmpayments>
+			</groups>
+		</payment>
+
+		<sales>
+			<quote>
+				<totals>
+					<!-- totals block for display of additional fee -->
+					<cmpayments_fee>
+						<!-- totals model -->
+						<class>cmpayments/sales_totals_quote</class>
+						<!-- determine position of the totals entry -->
+						<after>subtotal,discount,shipping,tax</after>
+						<before>grand_total</before>
+						<!-- renderer block for fee in checkout -->
+						<renderer>cmpayments/checkout_fee</renderer>
+						<admin_renderer>cmpayments/checkout_fee</admin_renderer>
+					</cmpayments_fee>
+
+					<!-- totals block for display of additional fee tax -->
+					<cmpayments_fee_tax>
+						<!-- totals tax model -->
+						<class>cmpayments/sales_totals_tax_quote</class>
+						<!-- determine position of the totals entry -->
+						<after>subtotal,discount,shipping,tax</after>
+						<before>grand_total</before>
+					</cmpayments_fee_tax>
+				</totals>
+			</quote>
+
+			<order_invoice>
+				<totals>
+					<cmpayments_ap>
+						<!-- totals block so invoice includes additional fee in totals -->
+						<class>cmpayments/sales_totals_invoice</class>
+						<after>subtotal,discount,shipping,tax</after>
+						<before>grand_total</before>
+					</cmpayments_ap>
+				</totals>
+			</order_invoice>
+		</sales>
+
+		<!-- Define fields to convert from quote to order -->
+		<fieldsets>
+			<sales_convert_quote>
+				<cmpayments_fee_amount>
+					<to_order>*</to_order>
+				</cmpayments_fee_amount>
+				<cmpayments_fee_tax_amount>
+					<to_order>*</to_order>
+				</cmpayments_fee_tax_amount>
+			</sales_convert_quote>
+			<sales_convert_order>
+				<cmpayments_fee_amount>
+					<to_invoice>*</to_invoice>
+				</cmpayments_fee_amount>
+				<cmpayments_fee_tax_amount>
+					<to_invoice>*</to_invoice>
+				</cmpayments_fee_tax_amount>
+			</sales_convert_order>
+		</fieldsets>
+	</global>
+
+	<frontend>
+		<!-- define router for URL calls of CM Payments -->
+		<routers>
+			<cmpayments>
+				<use>standard</use>
+				<args>
+					<module>Comaxx_CmPayments</module>
+					<frontName>cmpayments</frontName>
+				</args>
+			</cmpayments>
+		</routers>
+		<layout>
+			<updates>
+				<cmpayments>
+					<file>comaxx_cmpayments.xml</file>
+				</cmpayments>
+			</updates>
+		</layout>
+		<translate>
+			<modules>
+				<translations>
+					<files>
+						<default>Comaxx_CmPayments.csv</default>
+					</files>
+				</translations>
+			</modules>
+		</translate>
+	</frontend>
+
+	<!-- backend config page -->
+	<adminhtml>
+		<acl>
+			<resources>
+				<admin>
+					<children>
+						<system>
+							<children>
+								<config>
+									<children>
+										<cmpayments translate="title" module="cmpayments">
+											<title>CM Payments</title>
+										</cmpayments>
+									</children>
+								</config>
+							</children>
+						</system>
+					</children>
+				</admin>
+			</resources>
+		</acl>
+		<!-- add layout file for adminhtml overrides/styling -->
+		<layout>
+			<updates>
+				<cmpayments>
+					<file>comaxx_cmpayments.xml</file>
+				</cmpayments>
+			</updates>
+		</layout>
+		<translate>
+			<modules>
+				<translations>
+					<files>
+						<default>Comaxx_CmPayments.csv</default>
+					</files>
+				</translations>
+			</modules>
+		</translate>
+	</adminhtml>
+
+	<!-- backend config defaults, includes all the general cmpayments config values  -->
+	<default>
+		<cmpayments>
+			<!-- Used for possible payment methods as a shortreference to EUR -->
+			<european_countries>AD,AL,AT,BA,BE,BG,BY,CH,CY,CZ,DE,DK,EE,ES,FI,FO,FR,GG,GB,GI,GR,HR,HU,IE,IM,IS,IT,JE,LI,LT,LU,LV,MC,MD,MK,MT,NL,NO,PL,PT,RO,RU,SE,SI,SJ,SK,SM,TR,UA,VA,YU</european_countries>
+			<general>
+				<active>0</active>
+				<module_mode>test</module_mode>
+				<offline_refund_override>1</offline_refund_override>
+			</general>
+
+			<!-- define requirements to run the plugin properly -->
+			<version>
+				<requirements>
+					<curl>7.19.7</curl>
+					<php>5.6</php>
+				</requirements>
+				<checks>
+					<curl>
+						<check>curl_version</check>
+						<argument>version</argument>
+					</curl>
+					<php>phpversion</php>
+				</checks>
+			</version>
+
+			<locking>
+				<!-- in seconds -->
+				<lock_timeout_sec>60</lock_timeout_sec>
+				<!-- in seconds can be < 1 -->
+				<try_wait_sec>0.2</try_wait_sec>
+				<!-- in seconds -->
+				<steal_loc_sec>3600</steal_loc_sec>
+				<!-- in seconds -->
+				<cleanup_time_sec>483600</cleanup_time_sec>
+			</locking>
+		</cmpayments>
+
+		<!-- define sort order of the totals line for additional fee -->
+		<sales>
+			<totals_sort>
+				<cmpayments_payment_fee>15</cmpayments_payment_fee>
+			</totals_sort>
+		</sales>
+
+		<!-- registering the payment methods, includes all information directly relevant to a single payment method -->
+		<payment>
+			<cmpayments_idl>
+				<title>iDEAL</title>
+				<cmname>iDEAL</cmname>
+				<active>0</active>
+				<model>cmpayments/method_ideal</model>
+				<regions>NL</regions>
+				<group>cmpayments</group>
+				<sort_order>1</sort_order>
+			</cmpayments_idl>
+			<cmpayments_idl_qr>
+				<title>iDEAL QR Code</title>
+				<cmname>iDEAL QR</cmname>
+				<active>0</active>
+				<model>cmpayments/method_idealqr</model>
+				<regions>NL</regions>
+				<group>cmpayments</group>
+			</cmpayments_idl_qr>
+			<cmpayments_cc>
+				<title>CreditCard</title>
+				<cmname>Creditcard</cmname>
+				<active>0</active>
+				<model>cmpayments/method_creditcard</model>
+				<regions>INT</regions>
+				<group>cmpayments</group>
+				<issuers>MasterCard,VISA</issuers>
+				<sort_order>3</sort_order>
+			</cmpayments_cc>
+			<cmpayments_ap>
+				<title>AfterPay</title>
+				<cmname>AfterPay</cmname>
+				<active>0</active>
+				<model>cmpayments/method_afterpay</model>
+				<regions>NL</regions>
+				<group>cmpayments</group>
+				<sort_order>4</sort_order>
+			</cmpayments_ap>
+			<cmpayments_bc>
+				<title>Bancontact</title>
+				<cmname>Bancontact</cmname>
+				<active>0</active>
+				<model>cmpayments/method_bancontact</model>
+				<regions>BE</regions>
+				<group>cmpayments</group>
+				<sort_order>5</sort_order>
+			</cmpayments_bc>
+			<cmpayments_sof>
+				<title>Sofortüberweisung</title>
+				<cmname>SOFORT</cmname>
+				<active>0</active>
+				<model>cmpayments/method_sofortuberweisung</model>
+				<regions>DE,AT,CH</regions>
+				<group>cmpayments</group>
+				<sort_order>6</sort_order>
+			</cmpayments_sof>
+			<cmpayments_ppl>
+				<title>PayPal</title>
+				<cmname>PayPal</cmname>
+				<active>0</active>
+				<model>cmpayments/method_paypal</model>
+				<regions>INT</regions>
+				<group>cmpayments</group>
+				<sort_order>7</sort_order>
+			</cmpayments_ppl>
+			<cmpayments_wt>
+				<title>Wire Transfer</title>
+				<cmname>WireTransfer</cmname>
+				<active>0</active>
+				<model>cmpayments/method_wiretransfer</model>
+				<regions>NL,BE</regions>
+				<group>cmpayments</group>
+				<sort_order>8</sort_order>
+			</cmpayments_wt>
+		</payment>
+	</default>
+</config>

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <checkout_onepage_index>
+        <reference name="head">
+            <!-- Afterpay field styling for default magento look -->
+            <action method="addItem"><type>skin_css</type><name>comaxx_cmpayments/css/checkout.css</name><params/></action>
+            <!-- Afterpay form validation methods -->
+            <action method="addItem"><type>skin_js</type><name>comaxx_cmpayments/js/validation.js</name><params/></action>
+        </reference>
+    </checkout_onepage_index>
+
+    <onestepcheckout_index_index>
+        <reference name="head">
+            <!-- Afterpay field styling for default magento look -->
+            <action method="addItem"><type>skin_css</type><name>comaxx_cmpayments/css/checkout.css</name><params/></action>
+            <!-- Afterpay form validation methods -->
+            <action method="addItem"><type>skin_js</type><name>comaxx_cmpayments/js/validation.js</name><params/></action>
+        </reference>
+    </onestepcheckout_index_index>
+
+	<cmpayments_idealqr_index>
+		<reference name="head">
+			<!-- IdealQR field styling for default magento look -->
+			<action method="addItem"><type>skin_css</type><name>comaxx_cmpayments/css/idealqr.css</name><params/></action>
+			<!-- IdealQR check payment javascript -->
+			<action method="addItem"><type>skin_js</type><name>comaxx_cmpayments/js/ideal-qr.js</name><params/></action>
+		</reference>
+
+		<reference name="content">
+			<block type="cmpayments/form_idealQR" name="cmpayments_ideal_qr" template="comaxx_cmpayments/form/ideal_qr.phtml" />
+		</reference>
+	</cmpayments_idealqr_index>
+</layout>

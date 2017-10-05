@@ -1,0 +1,7 @@
+<?php if ($image = $this->getImageUrl()): ?>
+    <div id="cmpayments-ideal-qr" data-update-url="<?php echo Mage::getUrl('cmpayments/idealQR/checkPayment')?>">
+        <?php echo $this->getBlockHtml('formkey')?>
+        <span><?php echo $this->__('Please scan the QR image using the iDEAL QR App')?></span>
+        <img src="<?php echo $image?>" />
+    </div>
+<?php endif?>

@@ -1,0 +1,29 @@
+@CHARSET "UTF-8";
+
+/* set config page header image */
+h3.cmpayments-header { background:url(images/cmpayments_logo.png) no-repeat 0 0;
+  height:0;
+  background-size: 180px 45px;
+  overflow:hidden;
+  padding:45px 0 0;
+  width:180px;
+}
+
+/* set image and size */
+ul.tabs a.cmpayments-section span,
+ul.tabs a.cmpayments-section:hover span {
+  background:url(images/cmpayments_logo.png) no-repeat 0 0;
+  background-size: 150px 38px;
+  height:0;
+  overflow:hidden;
+  padding:38px 0 0;
+  width:150px;
+}
+
+/* prevent resize of menu item */
+ul.tabs a.cmpayments-section,
+ul.tabs a.cmpayments-section:hover {
+  background:url(../images/tabs_span_bg.gif) repeat-x 0 100%;
+  border-bottom:none;
+  padding:0.5em 0.5em 0.28em 1.5em;
+}

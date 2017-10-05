@@ -1,0 +1,9 @@
+/**
+ * CM Payments Additional styles for Ideal Qr.
+ *
+ * Used for set max-width for the QR Image
+ */
+
+#cmpayments-ideal-qr img {
+  max-width: 100%;
+}

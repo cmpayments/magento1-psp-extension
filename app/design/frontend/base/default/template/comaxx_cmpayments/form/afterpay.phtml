@@ -1,0 +1,155 @@
+<?php
+/** @var Comaxx_CmPayments_Block_Form_Afterpay $this */
+$_code         = $this->getMethodCode();
+$configHelper        = $this->helper('cmpayments/config');
+$billingShippingSame = $this->isBillingShippingSame(); ?>
+<div id="fields-container-afterpay">
+	<div class="form-list" id="payment_form_<?php echo $_code ?>" style="display: none;">
+        <?php echo $configHelper->__('Please fill these extra values to use the payment method'); ?>
+		<br/><br/>
+
+		<div id="<?php echo $_code ?>_reference_fields">
+			<strong><?php echo $configHelper->__('Reference person'); ?></strong>
+			<ul>
+				<li>
+					<label for="<?php echo $_code ?>_reference_initials" class="required"><em>*</em><?php echo $configHelper->__('Initials') ?>
+					</label>
+					<div class="input-box">
+						<input type="text" id="<?php echo $_code ?>_reference_initials" name="payment[reference_initials]" class="required-entry">
+					</div>
+				</li>
+				<li>
+					<label for="<?php echo $_code ?>_reference_lastname" class="required"><em>*</em><?php echo $configHelper->__('Lastname') ?>
+					</label>
+					<div class="input-box">
+						<input type="text" id="<?php echo $_code ?>_reference_lastname" name="payment[reference_lastname]" value="<?php echo $this->getCustomerLastname(); ?>" class="required-entry">
+					</div>
+				</li>
+				<li>
+					<label for="<?php echo $_code ?>_reference_email" class="required"><em>*</em><?php echo $configHelper->__('E-mail') ?>
+					</label>
+					<div class="input-box">
+						<input type="text" id="<?php echo $_code ?>_reference_email" name="payment[reference_email]" value="<?php echo $this->getCustomerEmail(); ?>" class="required-entry">
+					</div>
+				</li>
+				<li>
+					<label for="<?php echo $_code ?>_reference_phonenumber1" class="required"><em>*</em><?php echo $configHelper->__('Phone number 1') ?>
+					</label>
+					<div class="input-box">
+						<input type="text" id="<?php echo $_code ?>_reference_phonenumber1" name="payment[reference_phonenumber1]" value="<?php echo $this->getCustomerPhone(); ?>" class="required-entry validate-afterpay-phonenumber">
+					</div>
+				</li>
+				<li>
+					<label for="<?php echo $_code ?>_reference_phonenumber2" class="required"><em>*</em><?php echo $configHelper->__('Phone number 2') ?>
+					</label>
+					<div class="input-box">
+						<input type="text" id="<?php echo $_code ?>_reference_phonenumber2" name="payment[reference_phonenumber2]" value="<?php echo $this->getCustomerPhone(); ?>" class="required-entry validate-afterpay-phonenumber">
+					</div>
+				</li>
+				<li>
+					<label for="<?php echo $_code ?>_reference_gender" class="required"><em>*</em><?php echo $configHelper->__('Gender') ?>
+					</label>
+					<div class="input-box">
+						<select id="<?php echo $_code ?>_reference_gender" name="payment[reference_gender]" class="validate-select">
+                            <?php $options = Mage::getResourceSingleton('customer/customer')
+                                                 ->getAttribute('gender')
+                                                 ->getSource()
+                                                 ->getAllOptions(); ?>
+                            <?php $value = $this->getCustomerGender(); ?>
+                            <?php foreach ($options as $option): ?>
+								<option value="<?php echo $option['value'] ?>"<?php if ($option['value'] == $value)
+                                    echo ' selected="selected"' ?>><?php echo $option['label'] ?></option>
+                            <?php endforeach; ?>
+						</select>
+					</div>
+				</li>
+				<li>
+					<label for="<?php echo $_code ?>_reference_dob_day" class="required"><em>*</em><?php echo $configHelper->__('Date of Birth') ?>
+					</label>
+					<div class="input-box customer-dob">
+                        <?php $dob = $this->getCustomerDob(); ?>
+						<div class="dob-day">
+							<input type="text" id="<?php echo $_code ?>_reference_dob_day" name="payment[reference_dob_day]" value="<?php echo !$dob?'':date('d',
+                                $dob); ?>" class="input-text validate-custom"/>
+							<label for="<?php echo $_code ?>_reference_dob_day"><?php echo $configHelper->__('DD') ?></label>
+						</div>
+						<div class="dob-month">
+							<input type="text" id="<?php echo $_code ?>_reference_dob_month" name="payment[reference_dob_month]" value="<?php echo !$dob?'':date('m',
+                                $dob); ?>" class="input-text validate-custom"/>
+							<label for="<?php echo $_code ?>_reference_dob_month"><?php echo $configHelper->__('MM') ?></label>
+						</div>
+						<div class="dob-year">
+							<input type="text" id="<?php echo $_code ?>_reference_dob_year" name="payment[reference_dob_year]" value="<?php echo !$dob?'':date('Y',
+                                $dob); ?>" class="input-text validate-custom"/>
+							<label for="<?php echo $_code ?>_reference_dob_year"><?php echo $configHelper->__('YYYY') ?></label>
+						</div>
+						<div class="dob-full" style="display:none;">
+							<input type="hidden" id="<?php echo $this->getFieldId('dob') ?>" name="reference_dob"/>
+						</div>
+
+						<div class="validation-advice" style="display:none;"></div>
+						<script type="text/javascript">
+                            var customer_dob = new Varien.DOB('.customer-dob', true, 'dd-mm-yyyy');
+						</script>
+					</div>
+				</li>
+				<li>
+					<label for="<?php echo $_code ?>_reference_language" class="required"><em>*</em><?php echo $configHelper->__('Language') ?>
+					</label>
+					<div class="input-box">
+						<select id="<?php echo $_code ?>_reference_gender" name="payment[reference_language]" class="validate-select">
+                            <?php $options = $this->getLanguages(); ?>
+                            <?php foreach ($options as $value => $label): ?>
+								<option value="<?php echo $value?>"><?php echo $label ?></option>
+                            <?php endforeach; ?>
+						</select>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		<div>
+			<strong><?php echo $configHelper->__('Billing address'); ?></strong>
+			<ul>
+				<li>
+					<label for="<?php echo $_code ?>_billing_street" class="required"><em>*</em><?php echo $configHelper->__('Street') ?>
+					</label>
+					<div class="input-box">
+						<input type="text" id="<?php echo $_code ?>_billing_street" name="payment[billing_street]" value="<?php echo $this->getCustomerStreet(); ?>" class="required-entry">
+					</div>
+				</li>
+				<li>
+					<label for="<?php echo $_code ?>_billing_housenumber" class="required billing_housenumber"><?php echo $configHelper->__('House number') ?>
+						<em>*</em> + <?php echo $configHelper->__('Addition') ?></label>
+					<div class="input-box small">
+						<input type="text" id="<?php echo $_code ?>_billing_housenumber" name="payment[billing_housenumber]" value="<?php echo $this->getCustomerHousenumber(); ?>" class="required-entry validate-digits afterpay_housenumber">
+						<input type="text" id="<?php echo $_code ?>_billing_housenumberaddition" name="payment[billing_housenumber_addition]" value="<?php echo $this->getCustomerHousenumberAddition(); ?>">
+					</div>
+				</li>
+			</ul>
+		</div>
+
+		<div id="<?php echo $_code ?>_shipping_fields"<?php if ($billingShippingSame) {
+            echo ' style="display: none;"';
+        } ?>>
+			<strong><?php echo $configHelper->__('Shipping address'); ?></strong>
+			<ul>
+				<li>
+					<label for="<?php echo $_code ?>_shipping_street" class="required"><em>*</em><?php echo $configHelper->__('Street') ?>
+					</label>
+					<div class="input-box">
+						<input type="text" id="<?php echo $_code ?>_shipping_street" name="payment[shipping_street]" value="<?php echo $this->getShippingStreet(); ?>" class="required-entry">
+					</div>
+				</li>
+				<li>
+					<label for="<?php echo $_code ?>_shipping_housenumber" class="required shipping_housenumber"><?php echo $configHelper->__('House number') ?>
+						<em>*</em> + <?php echo $configHelper->__('Addition') ?></label>
+					<div class="input-box small">
+						<input type="text" id="<?php echo $_code ?>_shipping_housenumber" name="payment[shipping_housenumber]" value="<?php echo $this->getShippingHousenumber(); ?>" class="required-entry validate-digits afterpay_housenumber">
+						<input type="text" id="<?php echo $_code ?>_shipping_housenumberaddition" name="payment[shipping_housenumberaddition]" value="<?php echo $this->getShippingHousenumberAddition(); ?>">
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

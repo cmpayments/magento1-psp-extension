@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<layout>
+	<default>
+		<reference name="head">
+			<action method="addCss"><file>comaxx/cmpayments.css</file></action>
+		</reference>
+	</default>
+	
+	<add_order_grid_column_handle>
+		<reference name="sales_order.grid">
+			<action method="addColumnAfter">
+				<columnId>cmpayments_charge_id</columnId>
+				<arguments module="Comaxx_CmPayments" translate="header">
+					<header>CM Payments Charge Id</header>
+					<index>cmpayments_charge_id</index>
+					<type>text</type>
+					<width>100px</width>
+				</arguments>
+				<after>real_order_id</after>
+			</action>
+		</reference>
+	</add_order_grid_column_handle>
+	<!-- order grid action -->
+	<adminhtml_sales_order_grid>
+		<update handle="add_order_grid_column_handle" />
+	</adminhtml_sales_order_grid>
+	<!-- order grid view action -->
+	<adminhtml_sales_order_index>
+		<update handle="add_order_grid_column_handle" />
+	</adminhtml_sales_order_index>
+</layout>
