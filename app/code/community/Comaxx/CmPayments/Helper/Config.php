@@ -116,7 +116,7 @@ class Comaxx_CmPayments_Helper_Config extends Mage_Core_Helper_Abstract
      */
     public function getPaymentMethodsByName()
     {
-        $methods = [];
+        $methods = array();
         if ($this->_payment) {
             foreach ($this->_payment as $key => $method) {
                 if (strpos($key, 'cmpayments') !== false && array_key_exists('cmname', $method)) {

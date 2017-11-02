@@ -1119,15 +1119,15 @@ class Comaxx_CmPayments_Helper_Currency extends Mage_Core_Helper_Abstract
     /**
      * Get the amount in minor units
      *
-     * @param $amount   The amount to convert to minor_units
-     * @param $currency The currency to determine minor_units
+     * @param float  $amount   The amount to convert to minor_units
+     * @param string $currency The currency to determine minor_units
      *
      * @return float The amount in minor units according to currency
      */
     public function toMinorUnits($amount, $currency)
     {
         if ($minor_units = $this->getMinorUnits($currency)) {
-            $amount = round($amount * (10 ** $minor_units));
+            $amount = round($amount * pow(10, $minor_units));
         }
 
         return $amount;
